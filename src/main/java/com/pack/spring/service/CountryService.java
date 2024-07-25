@@ -14,4 +14,7 @@ public interface CountryService {
 	CountryDTO updateCountry(Long id, CountryDTO countryDTO);
 
 	void deleteCountry(Long id);
+	
+	Long countStatesByCountryName(String countryName);
+	
 }

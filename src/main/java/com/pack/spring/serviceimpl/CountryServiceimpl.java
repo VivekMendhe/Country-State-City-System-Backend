@@ -12,6 +12,7 @@ import com.pack.spring.dto.CityDTO;
 import com.pack.spring.dto.CountryDTO;
 import com.pack.spring.model.City;
 import com.pack.spring.model.Country;
+import com.pack.spring.model.State;
 import com.pack.spring.repository.CountryRepository;
 import com.pack.spring.repository.StateRepository;
 import com.pack.spring.service.CountryService;
@@ -60,7 +61,7 @@ public class CountryServiceimpl implements CountryService {
 	 * countryRepository.deleteById(id); }
 	 */
 
-	@Override
+	/*@Override
 	public void deleteCountry(Long id) {
 		if (countryRepository.existsById(id)) {
 			if (stateRepository.existsByCountryId(id)) {
@@ -70,6 +71,30 @@ public class CountryServiceimpl implements CountryService {
 		} else {
 			throw new ResolutionException("Country not found");
 		}
+	}*/
+	
+	@Override
+	public void deleteCountry(Long id) {
+	    if (countryRepository.existsById(id)) {
+	        List<String> stateNames = stateRepository.findByCountryId(id).stream()
+	                                    .map(State::getState)
+	                                    .collect(Collectors.toList());
+
+	        if (!stateNames.isEmpty()) {
+	            throw new IllegalStateException("Cannot delete country as it has dependent states: " + String.join(", ", stateNames));
+	        }
+
+	        countryRepository.deleteById(id);
+	    } else {
+	        throw new ResolutionException("Country not found");
+	    }
+	}
+
+	
+
+	@Override
+	public Long countStatesByCountryName(String countryName) {
+		return countryRepository.countStatesByCountryName(countryName);
 	}
 
 	// Convert dto to entity
@@ -81,4 +106,5 @@ public class CountryServiceimpl implements CountryService {
 	private CountryDTO entityToDTO(Country country) {
 		return modelMapper.map(country, CountryDTO.class);
 	}
+
 }

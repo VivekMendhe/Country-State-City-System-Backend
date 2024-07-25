@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.module.ResolutionException;
 import java.util.List;
 
 @RestController
@@ -27,6 +28,9 @@ public class CountryController {
         CountryDTO saveCountry = countryService.saveCountry(countryDTO);
         return ResponseEntity.ok(saveCountry);
     }
+    
+   
+
 
     @GetMapping("/{id}")
     public ResponseEntity<CountryDTO> getCountryById(@PathVariable Long id) {
@@ -66,4 +70,12 @@ public class CountryController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
+    
+
+    @GetMapping("/countStates")
+    public ResponseEntity<Long> countStatesByCountryName(@RequestParam String countryName) {
+        Long stateCount = countryService.countStatesByCountryName(countryName);
+        return ResponseEntity.ok(stateCount);
+    }
+    
 }

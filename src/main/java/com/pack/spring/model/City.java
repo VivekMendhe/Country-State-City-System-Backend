@@ -1,5 +1,6 @@
 package com.pack.spring.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,6 +19,6 @@ public class City {
 	private String city;
 
 	@ManyToOne
-	@JoinColumn(name = "state_id", nullable = false)
+	@JoinColumn(name = "state_id", nullable = true)
 	private State state;
 }

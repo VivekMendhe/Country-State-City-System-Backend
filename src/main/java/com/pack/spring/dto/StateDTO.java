@@ -6,5 +6,7 @@ import lombok.Data;
 public class StateDTO {
     private Long id;
     private String state;
+    private String population;
+    private Long cityCount;
     private Long countryId;
 }

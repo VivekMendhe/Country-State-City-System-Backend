@@ -16,4 +16,6 @@ public interface StateService {
 	void deleteState(Long id);
 
 	boolean existsByCountryId(Long id);
+	
+	long getCityCountByStateName(String stateName);
 }

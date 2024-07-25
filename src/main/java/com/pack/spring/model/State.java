@@ -3,6 +3,7 @@ package com.pack.spring.model;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -21,9 +22,11 @@ public class State {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String state;
+    private String population;
+    private Long cityCount;
 
     @ManyToOne
-    @JoinColumn(name = "country_id", nullable = false)
+    @JoinColumn(name = "country_id", nullable = true)
     private Country country;
 
     @OneToMany(mappedBy = "state", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

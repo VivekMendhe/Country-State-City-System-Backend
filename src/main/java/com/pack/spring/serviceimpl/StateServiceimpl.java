@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pack.spring.dto.StateDTO;
+import com.pack.spring.model.City;
 import com.pack.spring.model.Country;
 import com.pack.spring.model.State;
 import com.pack.spring.repository.CityRepository;
@@ -24,9 +25,9 @@ public class StateServiceimpl implements StateService {
 
 	@Autowired
 	private CountryRepository countryRepository;
-	
+
 	@Autowired
-    private CityRepository cityRepository;
+	private CityRepository cityRepository;
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -61,30 +62,40 @@ public class StateServiceimpl implements StateService {
 		state = stateRepository.save(state);
 		return entityToDTO(state);
 	}
-	
+
 	@Override
 	public boolean existsByCountryId(Long countryId) {
-        return stateRepository.existsByCountryId(countryId);
-    }
+		return stateRepository.existsByCountryId(countryId);
+	}
 
-	/*@Override
-	public void deleteState(Long id) {
-		stateRepository.deleteById(id);
-	}*/
-	
+	/*
+	 * @Override public void deleteState(Long id) { stateRepository.deleteById(id);
+	 * }
+	 */
+
 	@Override
 	public void deleteState(Long id) {
-        if (stateRepository.existsById(id)) {
-            if (cityRepository.existsByStateId(id)) {
-                throw new IllegalStateException("Cannot delete state as it has dependent cities");
-            }
-            stateRepository.deleteById(id);
-        } else {
-            throw new ResolutionException("State not found");
-        }
+		if (stateRepository.existsById(id)) {
+			
+			 List<String> cityNames = cityRepository.findByStateId(id).stream()
+                     .map(City::getCity)
+                     .collect(Collectors.toList());
+			
+			 if (!cityNames.isEmpty()) {
+		            throw new IllegalStateException("Cannot delete country as it has dependent states: " + String.join(", ", cityNames));
+		        }
+			stateRepository.deleteById(id);
+		} else {
+			throw new ResolutionException("State not found");
+		}		        
 	}
 	
 	
+	
+	@Override
+    public long getCityCountByStateName(String stateName) {
+        return stateRepository.countCitiesByStateName(stateName);
+    }
 
 	// Convert dto to entity
 	private State dtoToEntity(StateDTO stateDTO) {
@@ -96,7 +107,4 @@ public class StateServiceimpl implements StateService {
 		return modelMapper.map(state, StateDTO.class);
 	}
 
-	
-	
-	
 }

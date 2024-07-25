@@ -65,4 +65,11 @@ public class StateController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
+
+	@GetMapping("/count/{stateName}")
+    public ResponseEntity<Long> getCityCountByStateName(@PathVariable String stateName) {
+        long count = stateService.getCityCountByStateName(stateName);
+        return ResponseEntity.ok(count);
+    }
+	
 }
